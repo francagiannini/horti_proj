@@ -71,6 +71,7 @@ base_quintas <- bind_cols(muestra20q,
                           rtas)%>% 
   mutate(Codigo=Codigo...1) %>% 
   select(!starts_with("Codigo..."))%>% 
-  select(!starts_with("Observa"))
+  select(!starts_with("Observa")) %>%
+  select(!starts_with("Motivo"))
 
 write.table(base_quintas, "base_quintas.txt", sep="\t")
