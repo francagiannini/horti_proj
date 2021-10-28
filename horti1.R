@@ -15,8 +15,9 @@ muestra <- readxl::read_excel("data/muestra.xlsx")
 
 muestra_cut <- muestra %>% select('Nombre_de_Cultivo', 
                                   'Productor_a', 
-                                  'Peso_kg_m2_mensual',
+                                  'Peso_kg_m2_ciclo',
                                   as.vector(unique(muestra$Nombre_de_Cultivo)))
+
 
 
 ## Modelo productividad bruta
@@ -47,10 +48,10 @@ muestra_cut <- muestra %>% select('Nombre_de_Cultivo',
 # recurrencia no usar 
 muestra_agregado <- 
   muestra %>% group_by(Productor_a , Nombre_de_Cultivo,.drop= TRUE) %>% 
-  summarise("Prod_media"=mean(Peso_kg_m2_mensual, na.rm=T),
-            "Prod_sd"=sd(Peso_kg_m2_mensual, na.rm=T),
+  summarise("Prod_media"=mean(Peso_kg_m2_ciclo, na.rm=T),
+            "Prod_sd"=sd(Peso_kg_m2_ciclo, na.rm=T),
             "n"=n(),
-            "recurr"= unique(recurrencia...273)
+            "recurr"= unique(recurrencia)
   )
 
 # resumen_muestra
@@ -91,7 +92,7 @@ merge_meta <- full_join(muestra_res, fao_resumen, by='Nombre_de_Cultivo')
 
 ######### Forestplot spp  #########
 
-install.packages("meta")
+#install.packages("meta")
 
 library(meta)
 merge_meta_dep <- merge_meta %>% drop_na()
@@ -134,8 +135,8 @@ forest(mm_rom, xlab = "Productivity", lab.e = 'Experimental_2019', lab.c = 'FAOS
 muestra_res_tipo <- muestra %>% 
   group_by(tipo_hortaliza) %>% 
   summarise(tipo= unique(tipo_hortaliza),
-            media_muestra=mean(Peso_kg_m2),
-            sd_muestra=sd(Peso_kg_m2),
+            media_muestra=mean(Peso_kg_m2_ciclo),
+            sd_muestra=sd(Peso_kg_m2_ciclo),
             n_muestra=n()
   )
 
@@ -191,7 +192,7 @@ mm_rom_tipo <-metacont(n_muestra, media_muestra,sd_muestra,
                        sm="ROM",
                        studlab=paste(tipo_hortaliza),
                        data=merge_meta_tipo,
-                       comb.random = TRUE) 
+                       random = TRUE) 
 
 forest(mm_rom_tipo, xlab = "Productivity", lab.e = 'Experimental_2019', lab.c = 'FAOSTAT_2019')
 
@@ -205,45 +206,6 @@ lanfranconi <-  readxl::read_excel("data/lanfranconi.xlsx", sheet="Copia de lanf
 
 
 lanfranconi <- lanfranconi %>% mutate('Nombre_de_Cultivo'=tolower(Cultivo),
-                                      'tipo_hortaliza'= recode_factor(Nombre_de_Cultivo,
-                                                                      "acelga"="hoja",
-                                                                      "achicoria"='hoja',
-                                                                      "aji"='fruto',
-                                                                      "ajo"='tallo_bulbo',
-                                                                      "alcaucil"='inflo_col',
-                                                                      "apio"='tallo_bulbo',
-                                                                      "arvejas"='fruto',
-                                                                      "batata"='tuberculo_raiz',
-                                                                      "berenjenas"='fruto',
-                                                                      "brocoli"='inflo_col',
-                                                                      "calabaza"='fruto',
-                                                                      "cebolla verdeo"='tallo_bulbo',
-                                                                      "cebolla de bulbo"='tallo_bulbo',
-                                                                      "chaucha"='fruto', 
-                                                                      "choclo"='fruto',
-                                                                      "coliflor"='inflo_col',
-                                                                      "espinacas"='hoja',
-                                                                      "espinaca de verano"='hoja',
-                                                                      "haba"='fruto',
-                                                                      "hinojo"='tallo_bulbo',
-                                                                      "lechuga"='hoja',
-                                                                      "nabo"='tuberculo_raiz',
-                                                                      "papa"='tuberculo_raiz',
-                                                                      "pepino"='fruto',
-                                                                      "perejil"='hoja',
-                                                                      "pimiento"='fruto',
-                                                                      "puerro"='tallo_bulbo',
-                                                                      "rabanito"='tuberculo_raiz',
-                                                                      "remolacha"='tuberculo_raiz',
-                                                                      "repollo"='inflo_col',
-                                                                      "rucula"='hoja',        
-                                                                      "tomates"='fruto',
-                                                                      "zanahoria"='tuberculo_raiz',
-                                                                      "zapallito verde"='fruto',
-                                                                      "zapallo"='fruto',
-                                                                      'repollo de bruselas'= 'inflo_col')) 
-
-
 
 merge_meta_lan<- full_join(muestra_res, lanfranconi, by='Nombre_de_Cultivo') %>% drop_na(c(sd_muestra, Peso_kg_m2))
 

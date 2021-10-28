@@ -5,8 +5,26 @@ library(spdep)
 
 
 muestra <- readxl::read_excel("data/muestra.xlsx")
+########## figura Variacion temporal de superficie asignada #################
+muestra %>% count(Nombre_de_Cultivo, tipo_hortaliza)
+muestra <- muestra %>% dplyr::mutate(mes=month(`Fecha muestra`))
+ggplot(muestra,aes(y= `Sup asig x frec (%)...291`, x=mes))+ 
+  geom_point() +
+  geom_smooth()+
+  facet_grid( rows = vars(tipo_hortaliza), scales = "free") +
+  theme_light()+
+  scale_x_continuous(name="Month", breaks=c(1,2,3,4,5,6,7,8,9,10,11,12))+ # eje x
+  ylab("Asignación de superficie x recurrencia (%)")+ # eje y
+  ggtitle("Variación anual de superficie asignada por tipo de hortaliza")
+ggplot(muestra,aes(y= `% asignacion de sup hort quinta...25`, x=mes))+ 
+  geom_point() +
+  geom_smooth()+
+  facet_grid( rows = vars(tipo_hortaliza), scales = "free") +
+  theme_light()+scale_x_continuous(name="Month", breaks=c(1,2,3,4,5,6,7,8,9,10,11,12))+ # eje x
+  ylab("Asignación de superficie (%)")+ # eje y
+  ggtitle("Variación anual de superficie asignada por tipo de hortaliza")
 
-########## figura #################
+########## figura Variacion temporal de Productividad #################
 muestra %>% count(Nombre_de_Cultivo, tipo_hortaliza)
 
 #table(muestra$Nombre_de_Cultivo,muestra$tipo_hortaliza)
@@ -15,13 +33,16 @@ muestra %>% count(Nombre_de_Cultivo, tipo_hortaliza)
 
 muestra <- muestra %>% dplyr::mutate(mes=month(`Fecha muestra`))
 
-ggplot(muestra,aes(y= Peso_kg_m2, x=mes))+ 
+ggplot(muestra,aes(y= Peso_kg_m2_ciclo, x=mes))+ 
   #stat_summary(fun=mean, geom="line")+
   geom_point() +
   #geom_line()+
   geom_smooth()+
   facet_grid( rows = vars(tipo_hortaliza), scales = "free") +
-  theme_light()
+  theme_light()+
+  scale_x_continuous(name="Month", breaks=c(1,2,3,4,5,6,7,8,9,10,11,12))+ # eje x
+  ylab("Productividad (kg/m2)")+ # eje y
+  ggtitle("Variación anual de productividad por tipo de hortaliza")
 
 ggplot(muestra,aes(y= Peso_kg_m2, x=mes, colour=Nombre_de_Cultivo))+ 
   geom_point() +
