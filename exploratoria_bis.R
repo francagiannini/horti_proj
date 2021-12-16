@@ -48,7 +48,7 @@ resanova <- lapply(2:ncol(data_sel_num)-1,anov)
 #reduce(list(resanova, .id='Congl', all=T), merge)
 
 
-#resanova <- as.data.frame(do.call("bind_rows", 
+resanova <- as.data.frame(do.call("bind_rows", 
                                   c(resanova#, .id='Congl'
                                     )))
 
@@ -69,8 +69,6 @@ resanova_forra <- bind_cols(resanova[[2]],resanova[[3]],
       resanova[[59]],resanova[[60]] ,
       .id="Congl"#,all =  T,incomparables=TRUE
       )
-
-#colnames(resanova) <- c("variable","p","sign","LSD")
 
 write.table(resanova_forra, "resanova_congl_abas.txt", sep="\t", dec = ".")
 write_excel_csv2(resanova, "resanova_congl_abas.csv", delim=";")

@@ -67,6 +67,7 @@ data_sel_num<- base_quintas %>% select("Quinta..Superficie.Total",
                                        "rec_tuberculo_raiz",                                        
                                        "rec_inflo_col"               
 )
+data_sel_num<- data_sel_num %>% select_if(is.numeric)
 
 corr <- cor(data_sel_num, use = "pairwise.complete.obs", method = "spearman")
 

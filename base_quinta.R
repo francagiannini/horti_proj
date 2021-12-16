@@ -7,7 +7,7 @@ library(googledrive)
 
 ### muestra ########
 drive_download(
-  "https://docs.google.com/spreadsheets/d/1mr8NAuNCDRg20TFOT69bobscBcu8RhfolD9qZOWsNFQ/edit#gid=579148914",
+  "https://docs.google.com/spreadsheets/d/1mr8NAuNCDRg20TFOT69bobscBcu8RhfolD9qZOWsNFQ/edit#gid=1517732420",
   path = "data/muestra.xlsx",
   overwrite = TRUE
 )
@@ -15,11 +15,11 @@ drive_download(
 muestra <- readxl::read_excel("data/muestra.xlsx")
 
 prod_global <- muestra %>% group_by(Codigo) %>% 
-  mutate(prod_media=mean(Peso_kg_m2_mensual)) %>% 
+  mutate(prod_media=mean(Peso_kg_m2_ciclo)) %>% 
   select(prod_media) %>% unique()
 
 prod_tipo <- muestra %>% group_by(Codigo,tipo_hortaliza) %>% 
-  mutate(prod_media=mean(Peso_kg_m2_mensual)) %>% 
+  mutate(prod_media=mean(Peso_kg_m2_ciclo)) %>% 
   select(prod_media) %>% unique() %>% 
   pivot_wider(names_from = tipo_hortaliza, 
               values_from = prod_media,
@@ -75,3 +75,6 @@ base_quintas <- bind_cols(muestra20q,
   select(!starts_with("Motivo"))
 
 write.table(base_quintas, "base_quintas.txt", sep="\t")
+base_quintas_num<- base_quintas %>% select_if(is.numeric)
+
+write.table(base_quintas, "base_quintas_num.txt", sep="\t")

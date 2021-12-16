@@ -19,40 +19,31 @@ muestra_cut <- muestra %>% select('Nombre_de_Cultivo',
                                   as.vector(unique(muestra$Nombre_de_Cultivo)))
 
 
+### MODELO BRUTO #1
 
-## Modelo productividad bruta
-## kg anuales para RACC
-## kg/anuales*m2
-
-## Productividad (kg/m2*mes)
-
-# funcion_fran <- function(i){
-#   x <- muestra[i,] 
-#   string <- x$Nombre_de_Cultivo
-#   rec <- x %>% select(string)
-#   #print(rec)
-#   as.numeric(rec[1,paste(string),drop=T])
-# }
-
-#a <- funcion_fran(1:nrow(muestra))
-
-#muestra$recurr_esp <-a
-
-#muestra$recurr_esp==muestra$recurrencia...273
-
-#midf %>%
-#  group_by(NombreDeCultivo, Productor) %>%
-#  summarize(recurrencia=
-#              unique(.[,unique(NombreDeCultivo) %in% colnames(.), drop=T])) 
-
-# recurrencia no usar 
 muestra_agregado <- 
   muestra %>% group_by(Productor_a , Nombre_de_Cultivo,.drop= TRUE) %>% 
   summarise("Prod_media"=mean(Peso_kg_m2_ciclo, na.rm=T),
             "Prod_sd"=sd(Peso_kg_m2_ciclo, na.rm=T),
             "n"=n(),
-            "recurr"= unique(recurrencia)
+            "recurr"= unique(recurrencia),
+            "Sup_media"=mean(asignacion_sup_hort_quinta, na.rm=T),
+            "Sup_sd"=sd(asignacion_sup_hort_quinta, na.rm=T),
   )
+
+abast_quinta_especie <-data.frame('Productor_a'=c(muestra_agregado$Productor_a),
+                                  'especie'=c(muestra_agregado$Nombre_de_Cultivo),
+                                  'abast_quinta_especie'=c(muestra_agregado$Prod_media*muestra_agregado$Sup_media*muestra_agregado$recurr))
+
+abast_quinta <- 
+  abast_quinta_especie %>% group_by(Productor_a,.drop= TRUE) %>% 
+  summarise('abast_quinta'= sum(abast_quinta_especie))
+
+write.table(muestra_agregado, "resumen_quintas.csv", sep="\t")
+
+abast_mean=mean(abast_quinta$abast_quinta, na.rm=T)
+abast_cvc=abast_mean*170
+
 
 # resumen_muestra
 muestra_res <- muestra %>% group_by(Nombre_de_Cultivo) %>% 
@@ -220,15 +211,3 @@ mm_rom_lan<-metacont(n_muestra, media_muestra,sd_muestra,
                      comb.random = TRUE) 
 
 forest(mm_rom_lan, xlab = "Productivity", lab.e = 'Experimental_2019', lab.c = 'Lanfranconi_1982')
-
-#### Censo ####
-
-drive_download(
-  "https://docs.google.com/spreadsheets/d/1wtpHKqKBdw0stfnGcx_Dastq2FUApvZj/edit#gid=562798443",
-  path = "data/fao.xlsx",
-  overwrite = TRUE
-)
-
-censo <-  readxl::read_excel("data/censo.xlsx")
-
-## Superficie asignada 
