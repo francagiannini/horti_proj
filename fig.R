@@ -41,8 +41,8 @@ ggplot(muestra,aes(y= Peso_kg_m2_ciclo, x=mes))+
   facet_grid( rows = vars(tipo_hortaliza), scales = "free") +
   theme_light()+
   scale_x_continuous(name="Month", breaks=c(1,2,3,4,5,6,7,8,9,10,11,12))+ # eje x
-  ylab("Productividad (kg/m2)")+ # eje y
-  ggtitle("Variación anual de productividad por tipo de hortaliza")
+  ylab("Productivity (kg/m2)")#+ # eje y
+  #ggtitle("Variación anual de productividad por tipo de hortaliza")
 
 ggplot(muestra,aes(y= Peso_kg_m2, x=mes, colour=Nombre_de_Cultivo))+ 
   geom_point() +

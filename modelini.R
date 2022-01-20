@@ -4,7 +4,7 @@ library(ggpubr)
 
 ### muestra ########
 drive_download(
-  "https://docs.google.com/spreadsheets/d/1Oxm_2O8KQpKgQKWDhB39I7Pbqdef2wYE/edit#gid=1608429386",
+  "https://docs.google.com/spreadsheets/d/1k4rfBZTyPQuBmAWD0rGkJzfngDAOxkbmwfe19cXN9XM/edit#gid=1323869412",
   path = "data/muestra.xlsx",
   overwrite = TRUE
 )
@@ -45,7 +45,7 @@ abast_quinta <-
 write.table(muestra_agregado, "resumen_quintas.csv", sep="\t")
 
 #Abastecimiento Bruto #1 en TONELADAS ANUALES
-abast_mean=mean(abast_quinta$abast_quinta/10000, na.rm=T)
+abast_mean=mean(abast_quinta$abast_quinta/1000, na.rm=T)
 abast_cvc=abast_mean*191
 
 #### MODELO BRUTO #2
@@ -59,12 +59,12 @@ mod2_muestra_agregado <-
 ##### CENSO ####
 
 drive_download(
-  "https://docs.google.com/spreadsheets/d/1IeSeE4nO9be7lHCwDUEaiJyu6J0DZ4lK/edit#gid=296974404",
+  "https://docs.google.com/spreadsheets/d/1eTJ6EQRTkTNy85fOWT9ZTFBYgMwd0WLcCSp4HHR6BKM/edit#gid=296974404",
   path = "data/censo_recc.xlsx",
   overwrite = TRUE
 )
 
-censo <- readxl::read_excel("data/censo_recc.xlsx")
+censo <- readxl::read_excel("data/censo_recc.xlsx", sheet = 'prueba')
 
 censo_recc <-
   censo %>% 

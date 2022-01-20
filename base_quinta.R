@@ -56,8 +56,8 @@ rtas <- bind_cols(prod_global,
   mutate(Codigo=Codigo...1) %>%
   select(!starts_with("Codigo.."))
 
-muestra20q <- readxl::read_excel("data/muestra.xlsx", sheet = '20quintas')
-
+muestra20q <- readxl::read_excel("data/muestra.xlsx", sheet = 'Prueba_setVICKY_20quintas')#'20quintas')
+#cambie la base de 20 quintas por la no binaria
 base_quintas <- bind_cols(muestra20q,
                           rtas)%>% 
   mutate(Codigo=Codigo...1) %>% 
@@ -70,3 +70,4 @@ write.table(base_quintas, "base_quintas.txt", sep="\t")
 base_quintas_num<- base_quintas %>% select_if(is.numeric)
 
 write.table(base_quintas_num, "base_quintas_num.txt", sep="\t")
+
