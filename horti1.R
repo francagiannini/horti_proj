@@ -57,7 +57,7 @@ muestra_res <- muestra %>% group_by(Nombre_de_Cultivo) %>%
 ########### FAO  #####
 
 drive_download(
-  "https://drive.google.com/file/d/1wtpHKqKBdw0stfnGcx_Dastq2FUApvZj/view?ts=6115312d",
+  "https://docs.google.com/spreadsheets/d/1Exw0FJIugbT74snJBryc4D0wqYllFtnR/edit#gid=562798443",
   path = "data/fao.xlsx",
   overwrite = TRUE
 )
@@ -196,7 +196,7 @@ drive_download(
 lanfranconi <-  readxl::read_excel("data/lanfranconi.xlsx", sheet="Copia de lanfranconi")[1:39,]
 
 
-lanfranconi <- lanfranconi %>% mutate('Nombre_de_Cultivo'=tolower(Cultivo),
+lanfranconi <- lanfranconi %>% mutate('Nombre_de_Cultivo'=tolower(Cultivo))
 
 merge_meta_lan<- full_join(muestra_res, lanfranconi, by='Nombre_de_Cultivo') %>% drop_na(c(sd_muestra, Peso_kg_m2))
 
@@ -208,6 +208,7 @@ mm_rom_lan<-metacont(n_muestra, media_muestra,sd_muestra,
                      sm="ROM",
                      studlab=paste(Nombre_de_Cultivo),
                      data=merge_meta_lan,
-                     comb.random = TRUE) 
+                     random = TRUE) 
 
 forest(mm_rom_lan, xlab = "Productivity", lab.e = 'Experimental_2019', lab.c = 'Lanfranconi_1982')
+
