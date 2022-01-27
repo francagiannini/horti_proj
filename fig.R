@@ -8,7 +8,7 @@ muestra <- readxl::read_excel("data/muestra.xlsx")
 ########## figura Variacion temporal de superficie asignada #################
 muestra %>% count(Nombre_de_Cultivo, tipo_hortaliza)
 muestra <- muestra %>% dplyr::mutate(mes=month(`Fecha muestra`))
-ggplot(muestra,aes(y= `Sup asig x frec (%)...291`, x=mes))+ 
+ggplot(muestra,aes(y= `Sup_asig_x_frec`, x=mes))+ 
   geom_point() +
   geom_smooth()+
   facet_grid( rows = vars(tipo_hortaliza), scales = "free") +
@@ -16,7 +16,7 @@ ggplot(muestra,aes(y= `Sup asig x frec (%)...291`, x=mes))+
   scale_x_continuous(name="Month", breaks=c(1,2,3,4,5,6,7,8,9,10,11,12))+ # eje x
   ylab("Asignación de superficie x recurrencia (%)")+ # eje y
   ggtitle("Variación anual de superficie asignada por tipo de hortaliza")
-ggplot(muestra,aes(y= `% asignacion de sup hort quinta...25`, x=mes))+ 
+ggplot(muestra,aes(y= `asignacion_sup_hort_quinta`, x=mes))+ 
   geom_point() +
   geom_smooth()+
   facet_grid( rows = vars(tipo_hortaliza), scales = "free") +
@@ -191,5 +191,3 @@ cbind(
 
 indices <- lapply(tipo, sp_index)
 indices_sp_table <- unique(do.call(rbind,indices));indices_sp_table
-
-
