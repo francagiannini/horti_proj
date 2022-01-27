@@ -209,7 +209,7 @@ plot(1:10, sil_width,
      ylab = "Silhouette Width")
 lines(1:10, sil_width)
 
-#PAM 
+#PAM 1
 pam_fit2 <- pam(gower_dist2, diss = TRUE, k = 2)
 pam_results2 <- censo191_clean_2 %>%
   dplyr::select(-Productor_a) %>%
@@ -235,15 +235,49 @@ tsne_data2 <- tsne_obj2$Y %>%
 ggplot(aes(x = X, y = Y), data = tsne_data2) +
   geom_point(aes(color = cluster2))
 
-#Armado de tabla doble clasificación
+#PAM 2
+pam_fit3 <- pam(gower_dist2, diss = TRUE, k = 4)
+pam_results3 <- censo191_clean_2 %>%
+  dplyr::select(-Productor_a) %>%
+  dplyr::select(-Codigo) %>%
+  mutate(cluster3 = pam_fit2$clustering) %>%
+  group_by(cluster3) %>%
+  do(the_summary = summary(.))
+
+pam_results3$the_summary
+
+censo191_clean_2[pam_fit3$medoids, ]
+
+tsne_obj3 <- Rtsne(gower_dist2, is_distance = TRUE, perplexity = 5, step=5000, epsilon=10, dims=2)
+
+#tsne_obj <- Rtsne(gower_dist, is_distance = TRUE, perplexity = 100, step=1, epsilon=10, dims=3)
+
+tsne_data3 <- tsne_obj3$Y %>%
+  data.frame() %>%
+  setNames(c("X", "Y")) %>%
+  mutate(cluster3 = factor(pam_fit3$clustering),
+         name = censo191_clean_2$Productor_a)
+
+ggplot(aes(x = X, y = Y), data = tsne_data3) +
+  geom_point(aes(color = cluster3))
+
+#Armado de tabla TRIPLE clasificación
 
 tsne_data_full <- tsne_obj2$Y %>%
   data.frame() %>%
   mutate(class1 = factor(pam_fit$clustering),
          class2 = factor(pam_fit2$clustering),
+         class3 = factor(pam_fit3$clustering),
          name = censo191_clean_2$Productor_a,
-         codigo = censo191_clean_2$Codigo) %>%
+         Codigo = censo191_clean_2$Codigo) %>%
   dplyr::select(-X1, -X2) 
 
 write_excel_csv2(tsne_data_full, "clusters.xlsx", delim=";")
+
+tsne_data_full$class1 <- as.numeric(tsne_data_full$class1)
+tsne_data_full%>%count(tsne_data_full$class1)
+tsne_data_full$class2 <- as.numeric(tsne_data_full$class2)
+tsne_data_full%>%count(tsne_data_full$class2)
+tsne_data_full$class3 <- as.numeric(tsne_data_full$class3)
+tsne_data_full%>%count(tsne_data_full$class3)
 

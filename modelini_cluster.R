@@ -274,3 +274,7 @@ abast_c3_tipo <- mac_tipo3 %>%
 abast_c3_tipo
 abast_c3<-sum(abast_c3_tipo$At_sum_c3)
 abast_c3
+
+abast_tute <- merge(abast_c1_tipo, abast_c2_tipo, by='tipo_hortaliza')
+abast_tute <- merge(abast_tute, abast_c3_tipo, by='tipo_hortaliza')
+write_excel_csv2(abast_tute, "abast_tute.xlsx", delim=";")
