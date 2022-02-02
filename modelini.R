@@ -11,7 +11,7 @@ drive_download(
 
 #as.vector(unique(muestra$Nombre_de_Cultivo))
 
-muestra <- readxl::read_excel("data/muestra.xlsx")
+muestra <- readxl::read_excel("data/muestra.xlsx", sheet = 'Para_cluster_nobinaria_modelo_p')
 
 muestra_cut <- muestra %>% select('Nombre_de_Cultivo', 
                                   'Productor_a', 
@@ -68,20 +68,19 @@ censo <- readxl::read_excel("data/censo_recc.xlsx", sheet = 'prueba')
 
 censo_recc <-
   censo %>% 
-  pivot_longer(!Código, names_to = "Nombre_de_Cultivo", values_to = "recurrencia")
+  pivot_longer(!Codigo, names_to = "Nombre_de_Cultivo", values_to = "recurrencia")
 
 censo_recc_dep <- censo_recc %>% drop_na(0)
 
-censo_ha <- censo %>% select('Código', 
-                       'Quinta_Superficie_Horticola', 
-)
+censo_ha <- censo %>% select('Codigo', 'Quinta_Superficie_Horticola')
+
 censo_recc_dep <- merge(censo_recc_dep,censo_ha)
 
 write.table(censo_recc_dep, "censo_recc_dep_pivot.csv", sep="\t")
 
 mod2 <- merge(censo_recc_dep,mod2_muestra_agregado)
 
-mod2 <- mod2%>% select('Productor_a'='Código', 
+mod2 <- mod2%>% select('Productor_a'='Codigo', 
                        'Nombre_de_Cultivo',
                        'recurrencia',
                        'Prod_kg_ha_media',
@@ -97,7 +96,8 @@ mod2_abast_quinta <-
   mod2_abast_quinta_especie %>% group_by(Productor_a,.drop= TRUE) %>% 
   summarise('abast_quinta'= sum(abast_quinta_especie))
 
-#hay dos quintas que aparentemente no aportan 219 y 58 pero en la encuesta le faltan los datos de recurrencia error de censo
+#hay tres quintas que aparentemente no aportan 219, 158 y 58 
+#pero en la encuesta le faltan los datos de recurrencia "error de censo"
 write.table(mod2_abast_quinta_especie, "resumen_quintas_191.csv", sep="\t")
 
 #Abastecimiento Bruto #2 en TONELADAS ANUALES

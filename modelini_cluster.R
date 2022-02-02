@@ -67,6 +67,7 @@ abast_quinta_especie <-data.frame('Codigo'=c(muestra_agregado$Codigo),
                                   'Nombre_de_Cultivo'=c(muestra_agregado$Nombre_de_Cultivo),
                                   'tipo_hortaliza'=c(muestra_agregado$tipo_hortaliza),
                                   'abast_quinta_especie'=c(muestra_agregado$Prod_kg_ha_media*((muestra_agregado$Asig_sup_media/100)*muestra_agregado$Sup_hort_quinta)))
+
 #Le saco la multiplicacion por recurrencia por especie 
 #dado que luego la multiplicaré por la suma de todas las recurrencias del TIPO en cada quinta
 
