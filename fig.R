@@ -7,6 +7,7 @@ library(spdep)
 muestra <- readxl::read_excel("data/muestra.xlsx")
 ########## figura Variacion temporal de superficie asignada #################
 muestra %>% count(Nombre_de_Cultivo, tipo_hortaliza)
+
 muestra <- muestra %>% dplyr::mutate(mes=month(`Fecha muestra`))
 ggplot(muestra,aes(y= `Sup_asig_x_frec`, x=mes))+ 
   geom_point() +
@@ -33,22 +34,50 @@ muestra %>% count(Nombre_de_Cultivo, tipo_hortaliza)
 
 muestra <- muestra %>% dplyr::mutate(mes=month(`Fecha muestra`))
 
-ggplot(muestra,aes(y= Peso_kg_m2_ciclo, x=mes))+ 
-  #stat_summary(fun=mean, geom="line")+
-  geom_point() +
-  #geom_line()+
-  geom_smooth()+
-  facet_grid( rows = vars(tipo_hortaliza), scales = "free") +
-  theme_light()+
-  scale_x_continuous(name="Month", breaks=c(1,2,3,4,5,6,7,8,9,10,11,12))+ # eje x
-  ylab("Productivity (kg/m2)")#+ # eje y
-  #ggtitle("Variación anual de productividad por tipo de hortaliza")
+  types_names <- list(
+    'fruto'="fruit\n vegetables",
+    'hoja'="leafy\n vegetables",
+    'inflo_col'="inflorescences\n and brassicas",
+    'tallo_bulbo'="steams\n and bulbs",
+    'tuberculo_raiz'="roots\n and tubers"
+  )
 
-ggplot(muestra,aes(y= Peso_kg_m2, x=mes, colour=Nombre_de_Cultivo))+ 
-  geom_point() +
-  geom_smooth(method = lm)+
-  facet_grid( rows = vars(tipo_hortaliza), scales = "free") +
-  theme_light()
+  type_labeller <- function(variable,value){
+    return(types_names[value])
+  }
+
+library(ggpmisc)
+### By type
+type_ppr <- ggplot(muestra,aes(y= Peso_kg_m2_ciclo, x=mes))+ 
+  #stat_summary(fun=mean, geom="line")+
+  geom_point(alpha=.4) +
+  #geom_line()+
+  stat_poly_line(formula = y ~ poly(x, 2, raw = TRUE),
+                 colour = "black", alpha=.2) +
+  stat_poly_eq(formula = y ~ poly(x, 2, raw = TRUE), 
+               aes(label = paste(after_stat(eq.label)#,
+                  #after_stat(adj.rr.label), sep = "*\", \"*\n"
+                  )
+                   )
+                     ) +
+  # geom_smooth(
+  #   colour="#619CFF", 
+  #   alpha=0.3)+
+  facet_grid( rows = vars(tipo_hortaliza), scales = "free", labeller= type_labeller) +
+  scale_x_continuous(name="Month", breaks=c(1,2,3,4,5,6,7,8,9,10,11,12))+ # eje x
+  scale_y_continuous(n.breaks = 5,
+                     minor_breaks=FALSE,
+                     #limits = c(0.04,9),
+                     labels = function(x) sprintf("%.0f", x))+
+  ylab(expression(Productivity~(kg~m^2)))+
+  theme_bw()+
+  theme(strip.text.x = element_text(size = 12, face = "italic"),
+        strip.text.y = element_text(size = 12),
+        axis.title = element_text(size = 12),
+        axis.text = element_text(size = 11))
+
+ggsave(plot=type_ppr, "type_ppr.jpg", height = 22 , units = "cm" )
+
 
 library(nlme)
 mod1 <-
